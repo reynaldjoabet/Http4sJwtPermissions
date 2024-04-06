@@ -384,6 +384,84 @@ class HttpSuite extends munit.CatsEffectSuite {
     )
   }
 
+  test("Token with missing issueAt should yield 401 with header") {
+    val algo = Algorithm.HMAC512("mysecret")
+    val token = JWT
+      .create()
+      .withIssuer("mycode.com")
+      //.withIssuedAt(Instant.now())
+      .withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
+      .withSubject(1L.toString()) // user identifier
+      .withClaim("username", "http4s@gmail.com")
+      // .withClaim("permissions", "read:user write:user delete:user") // edit
+      .sign(algo)
+    val req = GET.apply(
+      uri"/hello",
+      Authorization(
+        Credentials.Token(
+          AuthScheme.Bearer,
+          token
+        )
+      )
+    )
+    unauthorizedWithHeader(routes, req)(
+      Unauthorized,
+      Set("read:user", "write:user", "delete:user")
+    )
+  }
+
+  test("Token with missing expiresAt should yield 401 with header") {
+    val algo = Algorithm.HMAC512("mysecret")
+    val token = JWT
+      .create()
+      .withIssuer("mycode.com")
+      .withIssuedAt(Instant.now())
+      //.withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
+      .withSubject(1L.toString()) // user identifier
+      .withClaim("username", "http4s@gmail.com")
+      // .withClaim("permissions", "read:user write:user delete:user") // edit
+      .sign(algo)
+    val req = GET.apply(
+      uri"/hello",
+      Authorization(
+        Credentials.Token(
+          AuthScheme.Bearer,
+          token
+        )
+      )
+    )
+    unauthorizedWithHeader(routes, req)(
+      Unauthorized,
+      Set("read:user", "write:user", "delete:user")
+    )
+  }
+
+  test("Token with missing audience should yield 401 with header") {
+    val algo = Algorithm.HMAC512("mysecret")
+    val token = JWT
+      .create()
+      .withIssuer("mycode.com")
+      .withIssuedAt(Instant.now())
+      //.withAudience("no audience")
+      .withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
+      .withSubject(1L.toString()) // user identifier
+      .withClaim("username", "http4s@gmail.com")
+      // .withClaim("permissions", "read:user write:user delete:user") // edit
+      .sign(algo)
+    val req = GET.apply(
+      uri"/hello",
+      Authorization(
+        Credentials.Token(
+          AuthScheme.Bearer,
+          token
+        )
+      )
+    )
+    unauthorizedWithHeader(routes, req)(
+      Unauthorized,
+      Set("read:user", "write:user", "delete:user")
+    )
+  }
   test("Token with wrong issuer  should yield 401 with header") {
     val algo = Algorithm.HMAC512("mysecret")
     val token = JWT

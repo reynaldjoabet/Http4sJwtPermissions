@@ -13,7 +13,7 @@ import cats.syntax.all._
 import org.http4s.server.AuthMiddleware
 
 object CheckPermissionsMiddleware {
-
+//authenticate()
   def checkPermissions[F[_]: MonadThrow](
       jwtService: JWTService[F],
       requiredPermissions: Set[String]

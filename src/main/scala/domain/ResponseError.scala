@@ -34,6 +34,8 @@ object ResponseError {
   //   *   if a claim contained a different value than the expected one.
   //   */
   // 401 unauthorized
+  // A server generating a 401 (Unauthorized) response MUST send a
+   //WWW-Authenticate header field containing at least one challenge
 
   case class UnauthorizedResponse(scopes: Set[String]) extends ResponseError
 
@@ -49,3 +51,7 @@ object ResponseError {
 // some sites return a 404 (not found) error instead of a 403 error when a user is not authorized to access (or perform an operation on) a resource.
 // The primary purpose of doing so is to hide the existence of the resource from the user instead of letting the user know the resource exists but they are unable to perform the requested operation.
 // This practice is called error encapsulation, and we can see it implemented with 5xx errors when a 500 error is replaced with a 503 error to avoid informing potential attackers that an internal server error occurred
+// UnauthorizedError,
+//  InvalidRequestError,
+//  InvalidTokenError,
+//  InsufficientScopeError

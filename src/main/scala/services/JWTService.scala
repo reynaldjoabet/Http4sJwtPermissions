@@ -43,7 +43,9 @@ final class JWTServiceLive[F[_]: Sync: std.Console] private (
     .withClaimPresence(CLAIM_USERNAME)
     .withClaimPresence(CLAIM_PERMISSIONS)
     .withClaimPresence(RegisteredClaims.SUBJECT)
-    // .withSubject()
+    //.withClaimPresence(RegisteredClaims.AUDIENCE)
+    .withClaimPresence(RegisteredClaims.ISSUED_AT)
+    .withClaimPresence(RegisteredClaims.EXPIRES_AT)
     .asInstanceOf[BaseVerification]
     .build(clock)
 
@@ -53,10 +55,11 @@ final class JWTServiceLive[F[_]: Sync: std.Console] private (
     token <- Sync[F].delay(
       JWT
         .create()
-        .withIssuer(ISSUER)
+        .withIssuer(ISSUER) // The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT)
         .withIssuedAt(now)
-        .withExpiresAt(expiration)
-        .withSubject(user.id.toString)
+        .withExpiresAt(expiration)// The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".
+        //.withAudience("")
+        .withSubject(user.id.toString)//The "subject" identifies the principal that is the subject of the JWT
         .withClaim(CLAIM_USERNAME, user.email)
         // .withJWTId("")
         // .withClaim("roles", List("admin").asJava)
