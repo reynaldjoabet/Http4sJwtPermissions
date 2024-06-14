@@ -355,3 +355,69 @@ Identity standards such as SAML, OAuth2, and OpenID Connect enable the secure sh
 ### Client
 A client is a piece of software that requests tokens from your IdentityServer - either for authenticating a user (requesting an identity token) or for accessing a resource (requesting an access token). A client must be first registered with your IdentityServer before it can request tokens and is identified by a unique client ID
 [openid-connect-overview](https://www.scottbrady91.com/openid-connect/openid-connect-overview)
+
+
+Authorization, often referred to as access control, is the process of granting or denying access permissions to authenticated users or entities based on their identity, roles or attributes. It answers the question, "What are you allowed to do?"
+
+Authorization methods include:
+
+
+- Role-Based Access Control (RBAC): Users are assigned roles, and each role has specific permissions. Users inherit the permissions associated with their roles.
+- Attribute-Based Access Control (ABAC): Access is determined based on attributes of the user, resource and environment. For example, access might be granted if the user's department matches the resource's department.
+- Discretionary Access Control (DAC): Access control is at the discretion of the resource owner. Resource owners can grant or deny access to specific users.
+
+
+[](https://access.redhat.com/documentation/en-us/red_hat_enterprise_virtualization/3.6/html/technical_reference/virtual_network_interface_controller_vnic)
+
+A NIC provides a computer with a dedicated, full-time connection to a network. It implements the physical layer circuitry necessary for communicating with a data link layer standard, such as Ethernet or Wi-Fi. Each card represents a device and can prepare, transmit and control the flow of data on the network.
+
+IP addresses belong to networks, not to the devices attached to those networks
+core routers only care about the network id
+networknid, subnetid and host id
+The purpose of the mask or the part that is all 1s is to tell a router what part of an IP address is the subnetid
+ for a class A, the network id is the first octet, for a class B, the first octets and for a class C, the first three
+
+ Gateway routers serve as the entry or exit to each network
+
+
+ The numbers in the remaining octet with a coressponding 1 in the subnet mask are the subnet id
+ the numbers in the remaining octets that have a corresponding 0 in the host id
+
+ the size of each subnet is entirely defined by its subnet mask
+
+ [](interfaces.foreach(i=>println(i.isUp())))
+
+
+ Role-based access control is a security model that grants application users access based on predefined permissions. System admins can assign and validate these permissions to particular resources upon an access attempt. To help manage permissions, they create roles to group them:
+
+ ![alt text](image-5.png)
+
+ The certificate is the way to share the public key
+
+
+
+ ### Passkey
+
+ A passkey is a FIDO credential stored on your computer or phone and it is used to unlock your online accounts.It works using public key cryptography and proof that you own the credential is only shown to your online account when you unlock your phone
+### How FIDO Works
+ FIDO authentication uses standard public key cryptography techniques to provide phishing-resistant authentication. During registration with an online service, the user’s client device creates a new cryptographic key pair that is bound to the web service domain. The device retains the private key and registers the public key with the online service. These cryptographic key pairs, called passkeys, are unique to every online service. Unlike passwords, passkeys are resistant to phishing, are always strong, and are designed so that there are no shared secrets
+
+ ### How Authentication Works with FIDO
+
+With FIDO, the user’s device must prove possession of the private key by signing a challenge for sign-in to be completed. This can only occur once the user verifies the sign-in locally on their device, via quick and easy entry of a biometric, local PIN or touch of a FIDO security key. Sign-in is completed via a challenge-response from the user device and the online service; the service does not see or ever store the private key. 
+
+FIDO is designed from the ground up to protect user privacy and prevent phishing. Every passkey is unique and bound to the online service domain. The protocols do not provide information that can be used by different online services to collaborate and track a user across the services. Biometric information, if used, never leaves the user’s device.
+
+### Enrollment and Sign-in with FIDO 
+#### Enrolling a Passkey with an Online Service 
+
+User is prompted to create a passkey 
+User verifies the passkey creation via local authentication method such as biometrics, local PIN or touching their FIDO security key 
+User’s device creates a new public/private key pair (passkey) unique for the local device, online service and user’s account.
+Public key is sent to the online service and associated with the user’s account. Any information about the local authentication method (such as biometric measurements or templates) never leave the local device.
+
+#### Using a Passkey for Subsequent Sign-in 
+User is prompted to sign in with a passkey
+User verifies the sign in with passkey via local authentication method such as biometrics, local PIN or touching their FIDO security key 
+Device uses the user’s account identifier provided by the service to select the correct key and sign the service’s challenge. 
+Client device sends the signed challenge back to the service, which verifies it with the stored public key and signs-in the user

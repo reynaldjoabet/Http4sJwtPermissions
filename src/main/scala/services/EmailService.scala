@@ -1,31 +1,34 @@
 package services
 
+import java.util.Properties
+
 import cats.effect._
 import cats.implicits._
-import configs.EmailServiceConfig
 
-import java.util.Properties
+import configs.EmailServiceConfig
 import javax.mail._
 import javax.mail.internet.MimeMessage
 
 trait EmailService[F[_]] {
+
   def sendEmail(to: String, subject: String, content: String): F[Unit]
   def sendPasswordRecoveryEmail(to: String, token: String): F[Unit]
+
 }
 
 class LiveEmailService[F[_]: MonadCancelThrow] private (
-    emailServiceConfig: EmailServiceConfig
+  emailServiceConfig: EmailServiceConfig
 ) extends EmailService[F] {
 
   override def sendEmail(
-      to: String,
-      subject: String,
-      content: String
+    to: String,
+    subject: String,
+    content: String
   ): F[Unit] = {
     val messageResource =
       for {
-        prop <- propsResource
-        auth <- authenticatorResource
+        prop    <- propsResource
+        auth    <- authenticatorResource
         session <- createSession(prop, auth)
         message <- createMessage(session)(sender, to, subject, content)
       } yield message
@@ -44,7 +47,7 @@ class LiveEmailService[F[_]: MonadCancelThrow] private (
       line-height: 2;
       font-size: 20px;
     ">
-    <h1>${subject}</h1>
+    <h1>$subject</h1>
     <p>Your password recovery token: $token</p>
     <p>
       Click <a href="$frontendUrl/login">here</a> to get back to the application.
@@ -80,25 +83,25 @@ class LiveEmailService[F[_]: MonadCancelThrow] private (
 
   private val authenticatorResource: Resource[F, Authenticator] = Resource.pure(
     new Authenticator {
-      override protected def getPasswordAuthentication()
-          : PasswordAuthentication =
+
+      override protected def getPasswordAuthentication(): PasswordAuthentication =
         new PasswordAuthentication(user, pass)
+
     }
   )
 
   private def createSession(
-      prop: Properties,
-      auth: Authenticator
-  ): Resource[F, Session] = Resource
-    .pure(Session.getInstance(prop, auth))
+    prop: Properties,
+    auth: Authenticator
+  ): Resource[F, Session] = Resource.pure(Session.getInstance(prop, auth))
 
   private def createMessage(
-      session: Session
+    session: Session
   )(
-      from: String,
-      to: String,
-      subject: String,
-      content: String
+    from: String,
+    to: String,
+    subject: String,
+    content: String
   ): Resource[F, MimeMessage] = {
     val message = new MimeMessage(session)
     message.setFrom(from)
@@ -111,8 +114,10 @@ class LiveEmailService[F[_]: MonadCancelThrow] private (
 }
 
 object LiveEmailService {
+
   def apply[F[_]: MonadCancelThrow](
-      emailServiceConfig: EmailServiceConfig
+    emailServiceConfig: EmailServiceConfig
   ): F[LiveEmailService[F]] =
     new LiveEmailService[F](emailServiceConfig).pure[F]
+
 }

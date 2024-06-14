@@ -1,5 +1,5 @@
 package configs
 
 case class RecoveryTokenConfig(
-    duration: Long // token duration in ms
+  duration: Long // token duration in ms
 )

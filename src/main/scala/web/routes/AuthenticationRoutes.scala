@@ -1,0 +1,48 @@
+// package web.routes
+
+// import cats.effect.Async
+// import cats.implicits._
+// import services.authentication.AuthenticationService
+// import services.models.Context.{AuthenticatedRequestContext, RequestContext}
+// import web.requests.LoginRequest
+// import web.requests.RequestOps.ContextRequestOpsSyntax
+// import org.http4s.circe.CirceEntityDecoder.circeEntityDecoder
+// import org.http4s.circe.CirceEntityEncoder.circeEntityEncoder
+// import io.circe.generic.auto._
+// import com.ruchij.core.circe.Decoders._
+// import com.ruchij.core.circe.Encoders._
+// import web.middleware.Authenticator
+// import org.http4s.{AuthedRoutes, ContextRoutes, Response}
+// import org.http4s.dsl.Http4sDsl
+
+// object AuthenticationRoutes {
+//   def apply[F[_]: Async](authenticationService: AuthenticationService[F])(implicit dsl: Http4sDsl[F]): ContextRoutes[RequestContext, F] = {
+//     import dsl._
+
+//     val unauthenticatedRoutes =
+//       ContextRoutes.of[RequestContext, F] {
+//         case contextRequest @ POST -> Root / "login" as _ =>
+//           for {
+//             LoginRequest(email, password) <- contextRequest.to[LoginRequest]
+//             authenticationToken <- authenticationService.login(email, password)
+//             response <- Created(authenticationToken).flatMap(Authenticator.addCookie[F](authenticationToken, _))
+//           }
+//           yield response
+
+//         case contextRequest @ DELETE -> Root / "logout" as _ =>
+//           Authenticator.authenticationSecret(contextRequest.req)
+//             .fold[F[Response[F]]](NoContent()) { secret =>
+//               authenticationService.logout(secret).flatMap(user => Ok(user))
+//             }
+//             .map(_.removeCookie(Authenticator.CookieName))
+//       }
+
+//     val authenticatedRoutes =
+//       AuthedRoutes.of[AuthenticatedRequestContext, F] {
+//         case GET -> Root / "user" as AuthenticatedRequestContext(user, _) => Ok(user)
+//       }
+
+//     unauthenticatedRoutes <+> Authenticator.middleware(authenticationService, strict = true).apply(authenticatedRoutes)
+//   }
+
+// }

@@ -5,12 +5,13 @@ import scala.util.control.NoStackTrace
 sealed abstract class ResponseError {
   override def toString(): String = "Insufficient Scope"
 }
+
 object ResponseError {
 
-  case class UserNotFound(username: String) extends NoStackTrace
-  case class UserNameInUse(username: String) extends NoStackTrace
+  case class UserNotFound(username: String)    extends NoStackTrace
+  case class UserNameInUse(username: String)   extends NoStackTrace
   case class InvalidPassword(username: String) extends NoStackTrace
-  case object UnsupportedOperation extends NoStackTrace
+  case object UnsupportedOperation             extends NoStackTrace
 
   case object TokenNotFound extends NoStackTrace
 
@@ -35,7 +36,7 @@ object ResponseError {
   //   */
   // 401 unauthorized
   // A server generating a 401 (Unauthorized) response MUST send a
-   //WWW-Authenticate header field containing at least one challenge
+  // WWW-Authenticate header field containing at least one challenge
 
   case class UnauthorizedResponse(scopes: Set[String]) extends ResponseError
 

@@ -13,14 +13,14 @@ val cirisVersion = "3.5.0"
 val circeVersion = "0.14.6"
 
 val catsEffectVersion = "3.4.8"
-val fs2Version = "3.9.4"
+val fs2Version        = "3.9.4"
 val redis4catsVersion = "1.5.2"
-val flywayVersion = "9.21.2"
-val postgresVersion = "42.7.1"
-val doobieVersion = "1.0.0-RC4"
-val logbackVersion = "1.4.14"
+val flywayVersion     = "9.21.2"
+val postgresVersion   = "42.7.1"
+val doobieVersion     = "1.0.0-RC4"
+val logbackVersion    = "1.4.14"
 val pureConfigVersion = "0.17.12"
-val javaMailVersion = "1.6.2"
+val javaMailVersion   = "1.6.2"
 
 def circe(artifact: String): ModuleID =
   "io.circe" %% s"circe-$artifact" % circeVersion
@@ -33,33 +33,34 @@ def http4s(artifact: String): ModuleID =
 val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.6"
 
 val circeGenericExtras = circe("generic-extras")
-val circeCore = circe("core")
-val circeGeneric = circe("generic")
-val cireParser = "io.circe" %% "circe-parser" % circeVersion
-val retry = "com.github.cb372" %% "cats-retry" % "3.1.0"
-val cirisCore = ciris("ciris")
-val catsEffect = "org.typelevel" %% "cats-effect" % catsEffectVersion
-val fs2 = "co.fs2" %% "fs2-core" % fs2Version
-val http4sDsl = http4s("dsl")
-val http4sServer = http4s("ember-server")
-val http4sClient = http4s("ember-client")
+val circeCore          = circe("core")
+val circeGeneric       = circe("generic")
+val cireParser         = "io.circe"         %% "circe-parser" % circeVersion
+val retry              = "com.github.cb372" %% "cats-retry"   % "3.1.0"
+val cirisCore          = ciris("ciris")
+val catsEffect         = "org.typelevel"    %% "cats-effect"  % catsEffectVersion
+val fs2                = "co.fs2"           %% "fs2-core"     % fs2Version
+val http4sDsl          = http4s("dsl")
+val http4sServer       = http4s("ember-server")
+val http4sClient       = http4s("ember-client")
 //val blazeClient= ???
 //val blazeServer= "org.http4s" %% "http4s-blaze-server" % "0.23.15"
 val http4sCirce = http4s("circe")
 
-val doobie_hikari = "org.tpolecat" %% "doobie-hikari" % doobieVersion
-val postgres = "org.postgresql" % "postgresql" % postgresVersion
-val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
-val doobie = "org.tpolecat" %% "doobie-core" % doobieVersion
-val doobie_postgres = "org.tpolecat" %% "doobie-postgres" % doobieVersion
-val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+val doobie_hikari   = "org.tpolecat"  %% "doobie-hikari"   % doobieVersion
+val postgres        = "org.postgresql" % "postgresql"      % postgresVersion
+val flyway          = "org.flywaydb"   % "flyway-core"     % flywayVersion
+val doobie          = "org.tpolecat"  %% "doobie-core"     % doobieVersion
+val doobie_postgres = "org.tpolecat"  %% "doobie-postgres" % doobieVersion
+val logback         = "ch.qos.logback" % "logback-classic" % logbackVersion
 // https://mvnrepository.com/artifact/org.tpolecat/skunk-core
 val skunk = "org.tpolecat" %% "skunk-core" % "1.1.0-M3"
 
-val auth0 = "com.auth0" % "java-jwt" % "4.2.2"
+val auth0    = "com.auth0"    % "java-jwt"   % "4.2.2"
 val javaMail = "com.sun.mail" % "javax.mail" % javaMailVersion
 
 val redis4cats = "dev.profunktor" %% "redis4cats-effects" % redis4catsVersion
+
 val redis4catsLog4cats =
   "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
 

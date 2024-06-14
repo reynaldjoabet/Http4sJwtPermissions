@@ -1,7 +1,7 @@
 package domain
 
 case class UserToken(
-    email: String,
-    token: String,
-    expires: Long
+  email: String,
+  token: String,
+  expires: Long
 )

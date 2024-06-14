@@ -1,136 +1,165 @@
+import java.time.Instant
+
 import cats.effect.IO
 import cats.implicits._
-import org.http4s._
-import org.typelevel.ci.CIStringSyntax
-import org.http4s.jawn
-import io.circe.Encoder
-import org.http4s.circe._
 import cats.syntax.all._
-import io.circe.syntax._
-import munit.CatsEffectSuite
-import munit.CatsEffectAssertions
-import middlewares.CheckPermissionsMiddleware
-import munit.CatsEffectFunFixtures
-import munit.CatsEffectFixtures
-import configs.JWTConfig
-import services._
-import org.http4s.dsl.Http4sDsl
-import domain.User
-import org.http4s.Status._
-import org.http4s.client.dsl.io._
-import org.http4s.Method._
-import org.http4s.syntax.literals._
-import org.http4s.headers._
-import domain.UserJWT
-import com.auth0.jwt.JWT
+
 import com.auth0.jwt.algorithms.Algorithm
-import java.time.Instant
+import com.auth0.jwt.JWT
+import configs.JWTConfig
+import domain.User
+import domain.UserJWT
+import io.circe.syntax._
+import io.circe.Encoder
+import middlewares.CheckPermissionsMiddleware
+import munit.CatsEffectAssertions
+import munit.CatsEffectFixtures
+import munit.CatsEffectFunFixtures
+import munit.CatsEffectSuite
+import org.http4s._
+import org.http4s.circe._
+import org.http4s.client.dsl.io._
+import org.http4s.dsl.Http4sDsl
+import org.http4s.headers._
+import org.http4s.jawn
+import org.http4s.syntax.literals._
+import org.http4s.Method._
+import org.http4s.Status._
+import org.typelevel.ci.CIStringSyntax
+import services._
+
 class HttpSuite extends munit.CatsEffectSuite {
 
   def unauthorizedWithHeader(
-      routes: HttpRoutes[IO],
-      req: Request[IO]
+    routes: HttpRoutes[IO],
+    req: Request[IO]
   )(
-      expectedStatus: Status,
-      requiredPermissions: Set[String]
+    expectedStatus: Status,
+    requiredPermissions: Set[String]
   ) =
-    routes.run(req).value.map {
-      case Some(resp) =>
-        println(resp)
-        resp.headers.get(ci"Content-Length").map { headers =>
-          assertEquals(headers.head.value.toInt, 0)
+    routes
+      .run(req)
+      .value
+      .map {
+        case Some(resp) =>
+          println(resp)
+          resp
+            .headers
+            .get(ci"Content-Length")
+            .map { headers =>
+              assertEquals(headers.head.value.toInt, 0)
 
-        }
-        resp.headers.get(ci"WWW-Authenticate").map { headers =>
-          assertEquals(
-            headers.head.value
-              .split("realm=\"")(1)
-              .split("\"")
-              .head
-              .split(" ")
-              .toSet,
-            requiredPermissions
-          )
+            }
+          resp
+            .headers
+            .get(ci"WWW-Authenticate")
+            .map { headers =>
+              assertEquals(
+                headers.head.value.split("realm=\"")(1).split("\"").head.split(" ").toSet,
+                requiredPermissions
+              )
 
-        }
-        assertEquals(resp.status, expectedStatus)
+            }
+          assertEquals(resp.status, expectedStatus)
 
-      // resp.asJson.map { json =>
-      //   // Expectations form a multiplicative Monoid but we can also use other combinators like `expect.all`
-      //   assertEquals(resp.status, expectedStatus)
-      //   //assertEquals(json.dropNullValues, expectedBody.asJson.dropNullValues)
+        // resp.asJson.map { json =>
+        //   // Expectations form a multiplicative Monoid but we can also use other combinators like `expect.all`
+        //   assertEquals(resp.status, expectedStatus)
+        //   //assertEquals(json.dropNullValues, expectedBody.asJson.dropNullValues)
 
-      // }
+        // }
 
-      // resp.asJson
+        // resp.asJson
 
-      case None => fail("route not found")
-    }
+        case None => fail("route not found")
+      }
 
   def unauthorized(
-      routes: HttpRoutes[IO],
-      req: Request[IO]
+    routes: HttpRoutes[IO],
+    req: Request[IO]
   )(
-      expectedStatus: Status,
-      requiredPermissions: Set[String]
+    expectedStatus: Status,
+    requiredPermissions: Set[String]
   ) =
-    routes.run(req).value.map {
-      case Some(resp) =>
-        assertEquals(resp.status, expectedStatus)
-        assert(resp.headers.get(ci"WWW-Authenticate").isEmpty)
-        resp.headers.get(ci"Content-Length").map { headers =>
-          assertEquals(headers.head.value.toInt, 0)
+    routes
+      .run(req)
+      .value
+      .map {
+        case Some(resp) =>
+          assertEquals(resp.status, expectedStatus)
+          assert(resp.headers.get(ci"WWW-Authenticate").isEmpty)
+          resp
+            .headers
+            .get(ci"Content-Length")
+            .map { headers =>
+              assertEquals(headers.head.value.toInt, 0)
 
-        }
+            }
 
-      case None => fail("route not found")
-    }
+        case None => fail("route not found")
+      }
 
   def forbidden(
-      routes: HttpRoutes[IO],
-      req: Request[IO]
+    routes: HttpRoutes[IO],
+    req: Request[IO]
   )(
-      expectedStatus: Status,
-      requiredPermissions: Set[String]
+    expectedStatus: Status,
+    requiredPermissions: Set[String]
   ) =
-    routes.run(req).value.map {
-      case Some(resp) =>
-        assertEquals(resp.status, expectedStatus)
-        assert(resp.headers.get(ci"WWW-Authenticate").isEmpty)
-        resp.headers.get(ci"Content-Length").map { headers =>
-          assertEquals(headers.head.value.toInt, 0)
+    routes
+      .run(req)
+      .value
+      .map {
+        case Some(resp) =>
+          assertEquals(resp.status, expectedStatus)
+          assert(resp.headers.get(ci"WWW-Authenticate").isEmpty)
+          resp
+            .headers
+            .get(ci"Content-Length")
+            .map { headers =>
+              assertEquals(headers.head.value.toInt, 0)
 
-        }
+            }
 
-      case None => fail("route not found")
-    }
+        case None => fail("route not found")
+      }
 
   def httpStatus(routes: HttpRoutes[IO], req: Request[IO])(
-      expectedStatus: Status,
-      requiredPermissions: Set[String]
+    expectedStatus: Status,
+    requiredPermissions: Set[String]
   ): IO[Unit] =
-    routes.run(req).value.map {
-      case Some(resp) => assertEquals(resp.status, expectedStatus)
-      case None       => fail("route not found")
-    }
+    routes
+      .run(req)
+      .value
+      .map {
+        case Some(resp) => assertEquals(resp.status, expectedStatus)
+        case None       => fail("route not found")
+      }
 
   def httpFailure(routes: HttpRoutes[IO], req: Request[IO]): IO[Unit] =
-    routes.run(req).value.attempt.map {
-      case Left(_)  => assert(true)
-      case Right(_) => fail("expected a failure")
-    }
+    routes
+      .run(req)
+      .value
+      .attempt
+      .map {
+        case Left(_)  => assert(true)
+        case Right(_) => fail("expected a failure")
+      }
 
   val jwtConfig = JWTConfig(secret = "mysecret", ttl = 90)
-  val clock = java.time.Clock.systemDefaultZone()
+  val clock     = java.time.Clock.systemDefaultZone()
+
   class TestRoutes(jwtService: JWTService[IO]) extends Http4sDsl[IO] {
-    val routes = AuthedRoutes.of[User, IO] {
-      case req -> Root / "hello" as user => Ok()
+
+    val routes = AuthedRoutes.of[User, IO] { case req -> Root / "hello" as user =>
+      Ok()
     }
 
     val allRoutes: HttpRoutes[IO] = CheckPermissionsMiddleware(
       jwtService,
       Set("read:user", "write:user", "delete:user") // "edit:user"
     ).apply(routes)
+
   }
 
   val jwtService = JWTServiceLive.make[IO](jwtConfig, clock)
@@ -389,7 +418,7 @@ class HttpSuite extends munit.CatsEffectSuite {
     val token = JWT
       .create()
       .withIssuer("mycode.com")
-      //.withIssuedAt(Instant.now())
+      // .withIssuedAt(Instant.now())
       .withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
       .withSubject(1L.toString()) // user identifier
       .withClaim("username", "http4s@gmail.com")
@@ -416,7 +445,7 @@ class HttpSuite extends munit.CatsEffectSuite {
       .create()
       .withIssuer("mycode.com")
       .withIssuedAt(Instant.now())
-      //.withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
+      // .withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
       .withSubject(1L.toString()) // user identifier
       .withClaim("username", "http4s@gmail.com")
       // .withClaim("permissions", "read:user write:user delete:user") // edit
@@ -442,7 +471,7 @@ class HttpSuite extends munit.CatsEffectSuite {
       .create()
       .withIssuer("mycode.com")
       .withIssuedAt(Instant.now())
-      //.withAudience("no audience")
+      // .withAudience("no audience")
       .withExpiresAt(Instant.now().plusSeconds(jwtConfig.ttl))
       .withSubject(1L.toString()) // user identifier
       .withClaim("username", "http4s@gmail.com")
