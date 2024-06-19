@@ -20,7 +20,7 @@ import javax.crypto.SecretKeyFactory
 //import scala.jdk.javaapi.CollectionConverters._
 trait JwtService[F[_]] {
 
-  def createToken(user: UserJWT): F[UserToken]
+  def createToken(user: UserJwt): F[UserToken]
   def verifyToken(token: String): F[User]
   def verifyToken1(token: String): F[Option[User]]
 
@@ -60,7 +60,7 @@ val salt = "salt".getBytes("UTF-8")
     .asInstanceOf[BaseVerification]
     .build(clock)
 
-  override def createToken(user: UserJWT): F[UserToken] = for {
+  override def createToken(user: UserJwt): F[UserToken] = for {
     now        <- Sync[F].delay(clock.instant())
     expiration <- Sync[F].pure(now.plusSeconds(jwtConfig.ttl))
     token <- Sync[F].delay(
