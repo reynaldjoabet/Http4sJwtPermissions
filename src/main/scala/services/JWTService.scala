@@ -18,7 +18,7 @@ import javax.crypto.spec.PBEKeySpec
 import javax.crypto.SecretKeyFactory
 
 //import scala.jdk.javaapi.CollectionConverters._
-trait JWTService[F[_]] {
+trait JwtService[F[_]] {
 
   def createToken(user: UserJWT): F[UserToken]
   def verifyToken(token: String): F[User]
@@ -26,24 +26,27 @@ trait JWTService[F[_]] {
 
 }
 
-final class JWTServiceLive[F[_]: Sync: std.Console] private (
-  jwtConfig: JWTConfig,
+final class JwtServiceLive[F[_]: Sync: std.Console] private (
+  jwtConfig: JwtConfig,
   clock: java.time.Clock
-) extends JWTService[F] {
+) extends JwtService[F] {
 
-  val salt = "salt".getBytes("UTF-8")
-
+ 
+private  def generatedSecret(password:String)={
+val salt = "salt".getBytes("UTF-8")
 //A user-chosen password that can be used with password-based encryption
   val keySpec = new PBEKeySpec("password".toCharArray(), salt, 65536, 256)
 //This class represents a factory for secret keys.
 //Secret key factories operate only on secret (symmetric) keys
   val factory         = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
-  val generatedSecret = factory.generateSecret(keySpec).getEncoded
+ factory.generateSecret(keySpec).getEncoded
+}
+
 
   private val ISSUER            = "mycode.com"
   private val CLAIM_USERNAME    = "username"
   private val CLAIM_PERMISSIONS = "permissions"
-  private val algorithm         = Algorithm.HMAC512(generatedSecret) // mysecret
+  private val algorithm         = Algorithm.HMAC512("mysecret") // mysecret
 
   private val verifier = JWT
     .require(algorithm)
@@ -106,11 +109,11 @@ final class JWTServiceLive[F[_]: Sync: std.Console] private (
 
 }
 
-object JWTServiceLive {
+object JwtServiceLive {
 
   def make[F[_]: Sync: std.Console](
-    jwtConfig: JWTConfig,
+    jwtConfig: JwtConfig,
     clock: java.time.Clock
-  ) = new JWTServiceLive[F](jwtConfig, clock)
+  ) = new JwtServiceLive[F](jwtConfig, clock)
 
 }

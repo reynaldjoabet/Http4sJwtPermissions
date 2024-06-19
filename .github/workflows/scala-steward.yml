@@ -1,0 +1,26 @@
+name: Scala Steward
+
+on:
+ schedule:
+    - cron: '0 0 1 * *'
+
+  # Provide support for manually triggering the workflow via GitHub.  
+ workflow_dispatch:
+
+jobs:
+  scala-steward:
+    name: Scala Steward
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4  
+      - name: Launch Scala Steward
+        uses: scala-steward-org/scala-steward-action@v2
+        with:
+          author-name: scala-steward[bot]
+          author-email: scala-steward[bot]@users.noreply.github.com #scala-steward
+          github-token: ${{ secrets.WORKFLOW_PAT }} #WORKFLOW_PAT,GITHUB_TOKEN #${{ secrets.REPO_GITHUB_TOKEN }}
+          repo-config: .scala-steward.conf
+          ignore-opts-files: false
+          branches: main

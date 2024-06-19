@@ -11,13 +11,13 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.headers._
 import org.http4s.server.AuthMiddleware
 import org.http4s.AuthedRoutes
-import services.JWTService
+import services.JwtService
 
 object CheckPermissionsMiddleware {
 
 //authenticate()
   def checkPermissions[F[_]: MonadThrow](
-    jwtService: JWTService[F],
+    jwtService: JwtService[F],
     requiredPermissions: Set[String]
   ): Kleisli[F, Request[F], Either[ResponseError, User]] = Kleisli { req: Request[F] =>
     req.headers.get[Authorization] match {
@@ -49,7 +49,7 @@ object CheckPermissionsMiddleware {
   }
 
   def authenticateUser[F[_]: MonadThrow](
-    jwtService: JWTService[F],
+    jwtService: JwtService[F],
     rolesAllowed: Set[String]
   ): Kleisli[({ type Y[X] = OptionT[F, X] })#Y, Request[F], User] = Kleisli { req: Request[F] =>
     req.headers.get[Authorization] match {
@@ -96,7 +96,7 @@ object CheckPermissionsMiddleware {
     }
 
   def apply[F[_]: MonadThrow](
-    jwtService: JWTService[F],
+    jwtService: JwtService[F],
     requiredPermissions: Set[String]
   ): AuthMiddleware[F, User] =
     AuthMiddleware(checkPermissions(jwtService, requiredPermissions), onFailure)

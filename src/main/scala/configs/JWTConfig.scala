@@ -1,8 +1,8 @@
 package configs
 
-final case class JWTConfig(
+final case class JwtConfig(
   secret: String,
   ttl: Long
 )
 
-object JWTConfig {}
+object JwtConfig {}
