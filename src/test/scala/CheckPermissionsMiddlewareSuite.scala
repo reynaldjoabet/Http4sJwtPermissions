@@ -6,9 +6,9 @@ import cats.syntax.all._
 
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.JWT
-import configs.JWTConfig
+import configs.JwtConfig
 import domain.User
-import domain.UserJWT
+import domain.UserJwt
 import io.circe.syntax._
 import io.circe.Encoder
 import middlewares.CheckPermissionsMiddleware
@@ -146,10 +146,10 @@ class HttpSuite extends munit.CatsEffectSuite {
         case Right(_) => fail("expected a failure")
       }
 
-  val jwtConfig = JWTConfig(secret = "mysecret", ttl = 90)
+  val jwtConfig = JwtConfig(secret = "mysecret", ttl = 90)
   val clock     = java.time.Clock.systemDefaultZone()
 
-  class TestRoutes(jwtService: JWTService[IO]) extends Http4sDsl[IO] {
+  class TestRoutes(jwtService: JwtService[IO]) extends Http4sDsl[IO] {
 
     val routes = AuthedRoutes.of[User, IO] { case req -> Root / "hello" as user =>
       Ok()
@@ -162,7 +162,7 @@ class HttpSuite extends munit.CatsEffectSuite {
 
   }
 
-  val jwtService = JWTServiceLive.make[IO](jwtConfig, clock)
+  val jwtService = JwtServiceLive.make[IO](jwtConfig, clock)
 
   val routes: HttpRoutes[IO] = new TestRoutes(
     jwtService

@@ -2,7 +2,7 @@ import cats.effect.IO
 import cats.implicits._
 import cats.syntax.all._
 
-import configs.JWTConfig
+import configs.JwtConfig
 import domain.User
 import io.circe.syntax._
 import io.circe.Encoder
@@ -20,10 +20,10 @@ class CheckPermissionsMiddlewareSuite extends munit.Http4sHttpRoutesSuite {
   private val requiredPermissions =
     Set("read:user", "write:user", "delete:user")
 
-  val jwtConfig = JWTConfig(secret = "mysecret", ttl = 864000)
+  val jwtConfig = JwtConfig(secret = "mysecret", ttl = 864000)
   val clock     = java.time.Clock.systemDefaultZone()
 
-  class TestRoutes(jwtService: JWTService[IO]) extends Http4sDsl[IO] {
+  class TestRoutes(jwtService: JwtService[IO]) extends Http4sDsl[IO] {
 
     val routes = AuthedRoutes.of[User, IO] { case req -> Root / "hello" as user =>
       Ok()
@@ -37,7 +37,7 @@ class CheckPermissionsMiddlewareSuite extends munit.Http4sHttpRoutesSuite {
   }
 
   override val routes: HttpRoutes[IO] = new TestRoutes(
-    JWTServiceLive.make[IO](jwtConfig, clock)
+    JwtServiceLive.make[IO](jwtConfig, clock)
   ).allRoutes
 
   test(GET(uri"/hello")).alias(
