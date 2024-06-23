@@ -31,17 +31,15 @@ final class JwtServiceLive[F[_]: Sync: std.Console] private (
   clock: java.time.Clock
 ) extends JwtService[F] {
 
- 
-private  def generatedSecret(password:String)={
-val salt = "salt".getBytes("UTF-8")
+  private def generatedSecret(password: String) = {
+    val salt = "salt".getBytes("UTF-8")
 //A user-chosen password that can be used with password-based encryption
-  val keySpec = new PBEKeySpec("password".toCharArray(), salt, 65536, 256)
+    val keySpec = new PBEKeySpec("password".toCharArray(), salt, 65536, 256)
 //This class represents a factory for secret keys.
 //Secret key factories operate only on secret (symmetric) keys
-  val factory         = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
- factory.generateSecret(keySpec).getEncoded
-}
-
+    val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
+    factory.generateSecret(keySpec).getEncoded
+  }
 
   private val ISSUER            = "mycode.com"
   private val CLAIM_USERNAME    = "username"
