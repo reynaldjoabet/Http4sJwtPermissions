@@ -1,24 +1,25 @@
 // The simplest possible sbt build file is just one line:
 
-scalaVersion := "2.13.12"
+scalaVersion := "2.13.13"
 
 name := "BackendAuthentication"
 
 version := "1.0"
 
-val http4sVersion = "0.23.25"
+val http4sVersion = "0.23.27"
 
-val cirisVersion = "3.5.0"
+val cirisVersion = "3.6.0"
 
-val circeVersion = "0.14.6"
+val circeVersion = "0.14.8"
 
 val catsEffectVersion = "3.4.8"
-val fs2Version        = "3.9.4"
-val redis4catsVersion = "1.5.2"
-val flywayVersion     = "9.21.2"
-val postgresVersion   = "42.7.1"
 val doobieVersion     = "1.0.0-RC5"
-val logbackVersion    = "1.4.14"
+val postgresVersion   = "42.7.3"
+val flywayVersion     = "9.22.3"
+val redis4catsVersion = "1.7.0"
+val fs2Version        = "3.10.2"
+val logbackVersion    = "1.5.6"
+
 val pureConfigVersion = "0.17.12"
 val javaMailVersion   = "1.6.2"
 
@@ -30,13 +31,13 @@ def ciris(artifact: String): ModuleID = "is.cir" %% artifact % cirisVersion
 def http4s(artifact: String): ModuleID =
   "org.http4s" %% s"http4s-$artifact" % http4sVersion
 
-val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.6"
+val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.7"
 
 val circeGenericExtras = circe("generic-extras")
 val circeCore          = circe("core")
 val circeGeneric       = circe("generic")
 val cireParser         = "io.circe"         %% "circe-parser" % circeVersion
-val retry              = "com.github.cb372" %% "cats-retry"   % "3.1.0"
+val retry              = "com.github.cb372" %% "cats-retry"   % "3.1.3"
 val cirisCore          = ciris("ciris")
 val catsEffect         = "org.typelevel"    %% "cats-effect"  % catsEffectVersion
 val fs2                = "co.fs2"           %% "fs2-core"     % fs2Version
@@ -56,7 +57,7 @@ val logback         = "ch.qos.logback" % "logback-classic" % logbackVersion
 // https://mvnrepository.com/artifact/org.tpolecat/skunk-core
 val skunk = "org.tpolecat" %% "skunk-core" % "1.1.0-M3"
 
-val auth0    = "com.auth0"    % "java-jwt"   % "4.2.2"
+val auth0    = "com.auth0"    % "java-jwt"   % "4.4.0"
 val javaMail = "com.sun.mail" % "javax.mail" % javaMailVersion
 
 val redis4cats = "dev.profunktor" %% "redis4cats-effects" % redis4catsVersion
@@ -64,7 +65,7 @@ val redis4cats = "dev.profunktor" %% "redis4cats-effects" % redis4catsVersion
 val redis4catsLog4cats =
   "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
 
-val `http4s-munit` = "com.alejandrohdezma" %% "http4s-munit" % "0.15.1" % Test
+val `http4s-munit` = "com.alejandrohdezma" %% "http4s-munit" % "1.0.0" % Test
 libraryDependencies ++= Seq(
   cirisCore,
   http4sDsl,
