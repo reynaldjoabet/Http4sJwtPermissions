@@ -56,7 +56,7 @@ val logback         = "ch.qos.logback" % "logback-classic" % logbackVersion
 // https://mvnrepository.com/artifact/org.tpolecat/skunk-core
 val skunk = "org.tpolecat" %% "skunk-core" % "1.1.0-M3"
 
-val auth0    = "com.auth0"    % "java-jwt"   % "4.2.2"
+val auth0    = "com.auth0"    % "java-jwt"   % "4.4.0"
 val javaMail = "com.sun.mail" % "javax.mail" % javaMailVersion
 
 val redis4cats = "dev.profunktor" %% "redis4cats-effects" % redis4catsVersion
