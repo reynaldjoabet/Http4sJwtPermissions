@@ -8,7 +8,7 @@ version := "1.0"
 
 val http4sVersion = "0.23.25"
 
-val cirisVersion = "3.5.0"
+val cirisVersion = "3.6.0"
 
 val circeVersion = "0.14.6"
 
