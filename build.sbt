@@ -64,7 +64,7 @@ val redis4cats = "dev.profunktor" %% "redis4cats-effects" % redis4catsVersion
 val redis4catsLog4cats =
   "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
 
-val `http4s-munit` = "com.alejandrohdezma" %% "http4s-munit" % "0.15.1" % Test
+val `http4s-munit` = "com.alejandrohdezma" %% "http4s-munit" % "1.0.0" % Test
 libraryDependencies ++= Seq(
   cirisCore,
   http4sDsl,
